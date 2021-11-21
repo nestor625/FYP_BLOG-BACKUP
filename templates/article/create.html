@@ -1,0 +1,48 @@
+<!-- extends表明此頁面繼承自 base.html 文件 -->
+{% extends "base.html" %} {% load static %}
+<!-- 寫入 base.html 中定義的 title -->
+{% block title %} 寫文章 {% endblock title %}
+<!-- 寫入 base.html 中定義的 content -->
+{% block content %}
+<!-- 寫文章表單 -->
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <!-- 提交文章的表單 -->
+            <form method="post" action="">
+                <!-- Django中需要POST數據的地方都必須有csrf_token -->
+                {% csrf_token %}
+                <!-- 文章標題 -->
+                <div class="form-group">
+                    <!-- label -->
+                    <label for="title">文章標題</label>
+                    <!-- input_textbox -->
+                    <input type="text" class="form-control" id="title" name="title">
+                </div>
+                    <!-- 文章栏目 -->
+                <div class="form-group">
+                    <label for="column">滿意情度</label>
+                    <select class="form-control"
+                        id="column"
+                        name="column"
+                    >
+                    <option value="none">請選擇欄目...</option>
+                {% for column in columns %}
+                    <option value="{{ column.id }}">{{ column }}</option>
+                {% endfor %}
+                    </select>
+                </div>
+                <!-- 文章正文 -->
+                <div class="form-group">
+                    <label for="body">文章正文</label>
+                    <!-- textarea -->
+                    <textarea type="text" class="form-control" id="body" name="body" rows="12"></textarea>
+                </div>
+                <!-- 提交button -->
+                <button type="submit" class="btn btn-primary">完成</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

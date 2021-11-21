@@ -1,0 +1,70 @@
+<!-- 定義導航欄 -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+
+    <!-- 導航欄商標 -->
+    <a class="navbar-brand" href="{% url 'article:article_list' %}">WE PARK</a>
+
+    <!-- 導航入口 -->
+    <div>
+      <ul class="navbar-nav">
+          <li class="nav-item">
+
+              <!-- 改寫了這裡的 href -->
+              <a class="nav-link" href="{% url 'article:article_list' %}">文章</a>
+          </li>
+          <li class="nav-item">
+                <a class="nav-link" href="{% url 'article:article_create' %}">寫文章</a>
+          </li>
+              <!-- Django的 if 模板语句 -->
+          {% if user.is_authenticated %}
+          <!-- 如果用戶已經登錄，則顯示用戶名下拉框 -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ user.username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href='{% url "userprofile:edit" user.id %}'>個人信息</a>
+                <a class="dropdown-item" href="{% url 'userprofile:logout' %}">登出</a>
+                <a class="dropdown-item" href="#" onclick="user_delete()">刪除用戶</a>
+            </div>
+          </li>
+    <!-- 如果用戶未登錄，則顯示 “登錄” -->
+    {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'userprofile:login' %}">登錄</a>
+        </li>
+    <!-- if 語句在這裡結束 -->
+    {% endif %}
+
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<!-- 新增 -->
+{% if user.is_authenticated %}
+<form
+    style="display:none;"
+    id="user_delete"
+    action="{% url 'userprofile:delete' user.id %}"
+    method="POST"
+>
+{% csrf_token %}
+    <button type="submit">發送</button>
+</form>
+    <script>
+        function user_delete() {
+            // 调用layer弹窗组件
+            layer.open({
+                title: "確認刪除",
+                content: "確認刪除用戶資料嗎？",
+                yes: function(index, layero) {
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+            })
+        }
+    </script>
+{% endif %}

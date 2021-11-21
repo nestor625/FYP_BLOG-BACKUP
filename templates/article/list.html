@@ -1,0 +1,139 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+    首頁
+{% endblock title %}
+
+<!-- 寫入 base.html 中定義的 content -->
+{% block content %}
+
+<!-- 定義放置文章標題的div容器 -->
+<div class="container">
+        <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'article:article_list' %}?search={{ search }}">
+                    最新
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'article:article_list' %}?order=total_views&search={{ search }}">
+                    最多觀看次數
+                </a>
+            </li>
+        </ol>
+        </nav>
+        <!-- 新增，搜索欄 -->
+        <div class="row">
+            <div class="col-auto mr-auto">
+                <form class="form-inline" >
+                    <label class="sr-only">content</label>
+                    <input type="text"
+                        class="form-control mb-2 mr-sm-2"
+                        name="search"
+                        placeholder="搜索..."
+                        required
+                    >
+                </form>
+            </div>
+        </div>
+            <!-- 新增，搜索提示语 -->
+        {% if search %}
+            {% if articles %}
+                <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+            <hr>
+            {% else %}
+                <h4>暫無<span style="color: red">"{{ search }}"</span>有關的文章。</h4>
+                <hr>
+            {% endif %}
+        {% endif %}
+
+
+<!-- 列表循环 -->
+<div class="row mt-2">
+    {% for article in articles %}
+        <!-- 文章内容 -->
+        <div class="col-12">
+            <!-- 評分 -->
+            {% if article.column %}
+                <button type="button"
+                    class="btn btn-sm mb-2
+                        {% if article.column.title == '相當滿意' %}
+                            btn-success
+                        {% elif article.column.title == '相當不滿意' %}
+                            btn-danger
+                        {% elif article.column.title == '中等' %}
+                            btn-warning
+                        {% endif %}
+                    "
+                >
+                    {{ article.column }}
+                </button>
+            {% endif %}
+            <!-- 標題 -->
+            <h4>
+                <b>
+                    <a href="{% url 'article:article_detail' article.id %}"
+                       style="color: black;"
+                    >
+                        {{ article.title }}
+                    </a>
+                </b>
+            </h4>
+            <!-- 摘要 -->
+            <div>
+                <p style="color: gray;">
+                    {{ article.body|slice:'100' }}...
+                </p>
+            </div>
+            <!-- 注脚 -->
+            <p>
+                <!-- 附加信息 -->
+                <span style="color: green;">
+                   觀看次數: {{ article.total_views }}次 &nbsp;&nbsp;&nbsp;
+                </span>
+                <span style="color: blue;">
+                  發布日期: {{ article.created|date:'Y-m-d' }} &nbsp;&nbsp;&nbsp;
+                </span>
+                <span style="color: darkred;">
+                 更新日期: {{ article.updated|date:'Y-m-d' }}
+                </span>
+            </p>
+            <hr>
+        </div>
+    {% endfor %}
+
+    </div>
+    <!-- 页码导航 -->
+    <div class="pagination row">
+        <div class="m-auto">
+            <span class="step-links">
+                <!-- 如果不是第一页，则显示上翻按钮 -->
+                {% if articles.has_previous %}
+                    <a href="?page=1&order={{ order }}&search={{ search }}" class="btn btn-success">&laquo; 1</a>
+                    <span>...</span>
+                    <a href="?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary"
+                        class="btn btn-secondary">...</a>
+                {% endif %}
+
+                <!-- 当前页面 -->
+                <span class="current btn btn-danger btn-lg">
+                    {{ articles.number }}
+                </span>
+
+                <!-- 如果不是最末页，则显示下翻按钮 -->
+                {% if articles.has_next %}
+                    <a href="?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary"
+                        class="btn btn-secondary">{{ articles.next_page_number }}</a>
+                    <span>...</span>
+                    <a href="?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary"
+                        class="btn btn-success">{{ articles.paginator.num_pages }} &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+{% endblock content %}
