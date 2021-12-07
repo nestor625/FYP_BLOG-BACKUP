@@ -126,18 +126,18 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-# SMTP服务器，改为你的邮箱的smtp!
+# SMTP服务器，改为你的gmail的smtp!
 EMAIL_HOST = 'smtp.gmail.com'
 # 改为你自己的邮箱名！
-EMAIL_HOST_USER = 'fyptest8@gmail.com'
+EMAIL_HOST_USER = '<Your email>'
 # 你的邮箱密码
-EMAIL_HOST_PASSWORD = '2001625aA'
+EMAIL_HOST_PASSWORD = '<Your email password>'
 # 发送邮件的端口
 EMAIL_PORT = 587
 # 是否使用 TLS
 EMAIL_USE_TLS = True
 # 默认的发件人
-DEFAULT_FROM_EMAIL = 'WE_PARK <fyptest8@gmail.com>'
+DEFAULT_FROM_EMAIL = 'NAME <XXXX@gmail.com>'
 
 # 媒體文件地址
 MEDIA_URL = '/media/'
